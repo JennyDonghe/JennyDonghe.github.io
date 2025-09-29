@@ -1,0 +1,114 @@
+:root{
+  --bg: #dda5fa;
+  --card: #6f7edc;
+  --text: #ffffff;
+  --muted: #a8add6;
+  --accent: #eb80c2;
+  --link: #8ecae6;
+}
+
+html, body{
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+}
+
+a{ color: var(--link); text-decoration: underline; }
+a:hover{ text-decoration: none; }
+
+.site-header, .site-footer{
+  background: #686f8b;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.35);
+}
+
+.site-header h1{ margin: 0; }
+nav{
+  display: flex;
+  gap: 1rem;
+  margin-top: .5rem;
+}
+
+
+.container{
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.hero{
+  background: linear-gradient(135deg, #cbd3f9, #d3daf5);
+  border: 1px solid #939bd3;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+.cards{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.card{
+  background: var(--card);
+  border-radius: 1rem;
+  padding: 1rem;
+  
+}
+
+.btn{
+  display: inline-block;
+  margin-top: .5rem;
+  background: var(--accent);
+  color: #ffffff;
+  padding: .5rem .9rem;
+  border-radius: .6rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.reading blockquote{
+  margin: 1rem 0;
+  padding: .75rem 1rem;
+  border-left: 4px solid var(--accent);
+  background: #8188ab;
+  color: var(--muted);
+}
+
+.callout{
+  background: #8d97c4;
+  border: 1px solid #7a83bf;
+  border-radius: .75rem;
+  padding: .75rem 1rem;
+  margin: 1rem 0;
+}
+
+.gloss{
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: .75rem;
+  overflow: hidden;
+}
+.gloss th, .gloss td{
+  padding: .6rem .8rem;
+  border-bottom: 1px solid #828abc;
+  text-align: left;
+}
+.gloss thead th{ background: #8894d1; }
+
+.site-footer{
+  text-align: center;
+  color: var(--muted);
+}
+
+
+@media (max-width: 480px){
+  nav{ flex-wrap: wrap; }
+  .hero{ padding: 1rem; }
+}
