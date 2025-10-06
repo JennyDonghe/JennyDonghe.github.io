@@ -1,0 +1,61 @@
+body {
+  background-color: #92a1b4;
+  font-family: "Anton", sans-serif;
+}
+
+
+.poster {
+  position: relative;
+  height: 180vh;
+}
+
+
+.bg {
+  position: absolute;
+  font-size: 30vw;
+  font-weight: 450;
+  color: white;
+  transform: scaleX(2) rotate(90deg);
+  opacity: 0.95;               /* a bit softer white */
+}
+
+
+.bg:nth-child(1) { 
+  top: 5vh;  left: 58vw; }
+
+.bg:nth-child(2) { 
+  top: 50vh; left: 18vw; }
+
+.bg:nth-child(3) { 
+  top: 95vh; left: 52vw; }
+
+.bg:nth-child(4) { 
+  top: 145vh; left: 25vw; }
+
+
+.fg {
+  position: absolute;
+  font-size: 32vw;
+  font-weight: 700;
+  color: black;
+  transform: scaleY(2);
+  letter-spacing: -0.02em;
+}
+
+
+.fg:nth-child(5) { 
+  top: 25vh;  left: 8vw; }
+
+.fg:nth-child(6) { 
+  top: 95vh;  left: 26vw; }
+
+.fg:nth-child(7) { 
+  top: 15vh;  left: 50vw; }
+
+.fg:nth-child(8) { 
+  top: 145vh; left: 75vw; }
+
+
+.fg, .bg {
+  text-transform: uppercase;
+}
