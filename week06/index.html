@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<p>click eyes and mouth</p>
+<style>
+  
+  :root{
+    
+    --eye-w: 15%;   
+    --eye-h: auto;  
+    --mouth-w: 15%;
+  }
+  
+  body{margin:0; display:grid; place-items:center; min-height:100dvh; background:#111; color:#eee; font:500 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial}
+  
+  .wrap{padding:16px; width:min(92vw, 860px)}
+  h1{font-size:clamp(18px,3.2vw,26px); margin:0 0 10px; opacity:.85}
+  p{margin:0 0 12px; opacity:.8}
+
+  
+  .stage{ position:relative; width:100%; border-radius:14px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.5); background:#000 }
+  .stage img.bg{ display:block; width:100%; height:auto; }
+
+  
+  .hot{ position:absolute; transform:translate(-50%, -50%); cursor:pointer; }
+  .hot:focus{ outline:2px dashed #8ad; outline-offset:2px }
+  
+  .hot.left-eye{  left:40%; top:50%; width:var(--eye-w); }
+  .hot.right-eye{ left:60%; top:50%; width:var(--eye-w); }
+  .hot.mouth{     left:50%; top:62%; width:var(--mouth-w); }
+
+
+
+  
+  .overlay{ position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; }
+  .piece{ position:absolute; transform:translate(-50%, -50%); display:none; filter:drop-shadow(0 8px 14px rgba(0,0,0,.55)); }
+  .piece.show{ display:block; }
+
+  
+  .piece.left-eye{  left:40%; top:50%; width:var(--eye-w); }
+  .piece.right-eye{ left:60%; top:50%; width:var(--eye-w); }
+  .piece.mouth{     left:50%; top:62%; width:var(--mouth-w); }
+
+  
+  .hint{ position:absolute; right:10px; bottom:10px; background:rgba(0,0,0,.55); color:#fff; padding:6px 10px; border-radius:999px; font-size:12px }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>CoEvolution Quarterly,spring 1979</em></h1>
+    <p>you know about radiation...Here we will especially be looking at mutagenicity</p>
+    <div class="stage" id="stage">
+      <img class="bg" src="background.png" alt="CoEvolution Quarterly Spring 1979 cover — baby's face"/>
+
+      
+      <button class="hot left-eye"  aria-label="Toggle left eye"></button>
+      <button class="hot right-eye" aria-label="Toggle right eye"></button>
+      <button class="hot mouth"     aria-label="Toggle mouth"></button>
+
+      
+      <div class="overlay">
+        <img class="piece left-eye"  id="piece-left"  src="lefteye.png" alt="Replacement left eye"/>
+        <img class="piece right-eye" id="piece-right" src="righteye.png"   alt="Replacement right eye"/>
+        <img class="piece mouth"     id="piece-mouth" src="mouth.png"    alt="Replacement mouth"/>
+      </div>
+
+
+      
+    </div>
+  </div>
+
+<script>
+  
+  const toggle = (id)=> document.getElementById(id).classList.toggle('show');
+
+  
+  document.querySelector('.hot.left-eye').addEventListener('click', ()=> toggle('piece-left'));
+  document.querySelector('.hot.right-eye').addEventListener('click',()=> toggle('piece-right'));
+  document.querySelector('.hot.mouth').addEventListener('click',    ()=> toggle('piece-mouth'));
+
+ 
+  document.querySelectorAll('.hot').forEach(btn=>{
+    btn.setAttribute('role','button');
+    btn.setAttribute('tabindex','0');
+    btn.addEventListener('keydown', (e)=>{
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); btn.click(); }
+    })
+  })
+</script>
+<footer style="
+  text-align:center;
+  color:#aaa;
+  font-size:14px;
+  margin-top:20px;
+  padding:10px 0;
+  border-top:1px solid rgba(255,255,255,0.1);
+">
+  © Jenny Dong — Interactive piece inspired by <em>CoEvolution Quarterly, Spring 1979. sourcelink:https://www.alamy.com/stock-photo-baby-portrait-face-funny-humour-comic-vertical-close-up-detail-mouth-11493932.html</em>.
+</footer>
+
+</body>
+</html>
