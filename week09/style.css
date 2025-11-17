@@ -1,0 +1,92 @@
+body {
+    background: #fffdfd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.phone {
+    width: 600px;
+    height: 1100px;
+    background: url("phone.png");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.screen {
+    position: absolute;
+    top: 175px;       /* adjust until it aligns with your phone image */
+    left: 170px;      /* adjust */
+    width: 335px;    /* match inside of phone screen */
+    height: 653px;
+    background: rgb(236, 204, 235);
+    overflow-y: scroll;
+    border-radius: 20px;
+}
+
+/* Posts */
+.post {
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.post-img {
+    width: 100%;
+    border-radius: 12px;
+}
+
+.icons {
+    margin-top: 6px;
+    font-size: 22px;
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.like.liked {
+    color: red;
+}
+
+.divider {
+    width: 90%;
+    margin: 10px auto;
+    border-bottom: 1.5px solid #ccc;
+}
+
+.post-text {
+    font-size: 20px;
+    color: #444;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+/* Comments dropdown */
+.comments {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #555;
+    display: none;              /* hidden by default */
+    border-left: 2px solid #eee;
+    padding-left: 6px;
+}
+
+.comments.visible {
+    display: block;             /* shown when JS adds .visible */
+}
+
+.commenter {
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.text-divider {
+    width: 100%;
+    height: 1px;
+    background: #000000;
+    margin: 6px 0 10px 0;
+}
+
