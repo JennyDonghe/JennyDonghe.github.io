@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Past Works Showcase</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      background: #8c8cab;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial;
+      color: #1d1d1f;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-weight: 600;
+    }
+    .gallery {
+      width: 85%;
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      gap: 30px;
+    }
+    .pair, .single {
+      background: white;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+    h2 {
+      margin-top: 0;
+      font-weight: 500;
+    }
+    .pair-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    img {
+      width: 100%;
+      border-radius: 12px;
+    }
+    .back-btn {
+      display: block;
+      margin: 40px auto 0;
+      padding: 14px 30px;
+      background: #0071e3;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      text-align: center;
+    }
+    .back-btn:hover {
+      background: #0a84ff;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Past Works Showcase</h1>
+
+  <div class="gallery">
+
+    <!-- Week 1 -->
+    <div class="single">
+      <h2>Week 1</h2>
+      <p class="desc">In Week 1, I explored basic HTML structure, learning how to control layout, spacing, and text styling for the first time. This was my foundation for building cleaner, more intentional page designs later.</p>
+      <img src="assets/week1.png" alt="Week 1">
+    </div>
+
+    <!-- Week 2 -->
+    <div class="single">
+      <h2>Week 2</h2>
+      <p class="desc">In Week 2, I learned how to use colors, fonts, and backgrounds to create mood and express visual style. This helped me understand design choices beyond pure structure.</p>
+      <img src="assets/week2.png" alt="Week 2">
+    </div>
+
+    <!-- Week 3 -->
+    <div class="pair">
+      <h2>Week 3</h2>
+      <div class="pair-grid">
+        <p class="desc">Week 3 introduced more advanced CSS positioning. I learned how to layer images, align elements precisely, and start controlling page composition in a more creative way.</p>
+        <img src="assets/week3.png" alt="Week 3">
+        <img src="assets/3code.png" alt="Week 3 Code">
+      </div>
+    </div>
+
+    <!-- Week 4 -->
+    <div class="pair">
+      <h2>Week 4</h2>
+      <div class="pair-grid">
+        <p class="desc">In Week 4, I practiced combining images and text with fixed backgrounds, improving my ability to build visually consistent layouts. I also learned to clean up my CSS for better readability.</p>
+        <img src="assets/week4.png" alt="Week 4">
+        <img src="assets/4code.png" alt="Week 4 Code">
+      </div>
+    </div>
+
+    <!-- Week 5 -->
+    <div class="pair">
+      <h2>Week 5</h2>
+      <div class="pair-grid">
+        <p class="desc">In Week 5, I explored advanced CSS positioning and custom overlays. I learned how absolute positioning, transforms, and dynamic class changes can be combined to create drag-and-drop or layered interactive elements. This helped me gain confidence in building more complex visual interactions.</p>
+        <img src="assets/week5.png" alt="Week 5">
+        <img src="assets/5code.png" alt="Week 5 Code">
+      </div>
+    </div>
+
+    <!-- Week 6 -->
+    <div class="pair">
+      <h2>Week 6</h2>
+      <div class="pair-grid">
+        <p class="desc">In Week 5, I learned how to build interactive UI components using JavaScript event listeners. I implemented a working like-button system that toggles state and updates the like count dynamically, which improved my understanding of DOM scripting and state management.</p>
+        <img src="assets/week6.png" alt="Week 6">
+        <img src="assets/6code.png" alt="Week 6 Code">
+      </div>
+    </div>
+
+    <!-- Week 7 -->
+    <div class="pair">
+      <h2>Week 7</h2>
+      <div class="pair-grid">
+        <p class="desc">In Week 7, I built a random text generator for a cyber-themed interactive page. This taught me how to use JavaScript loops, arrays, and randomness to create dynamic visual output, which improved my ability to combine creative visuals with functional logic.</p>
+        <img src="assets/week7.png" alt="Week 7">
+        <img src="assets/7code.png" alt="Week 7 Code">
+      </div>
+    </div>
+
+  </div>
+
+  <button class="back-btn" onclick="location.href='final.html'">
+    to final project proposal->
+  </button>
+
+</body>
+</html>
