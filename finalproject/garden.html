@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Emotion Garden</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-background">
+    <div class="glass-card wide">
+      
+      <header class="top-bar">
+        <h1 class="app-title small">Emotion Garden 🌱</h1>
+        <nav class="top-nav">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="mood.html" class="nav-link">New Entry</a>
+          <a href="history.html" class="nav-link">History</a>
+          <a href="garden.html" class="nav-link">Garden</a>
+        </nav>
+      </header>
+
+      <p class="section-label">
+        Use <b>W A S D</b> to walk around.<br>
+        Stand near a flower and press <b>E</b> to interact. 💗
+      </p>
+
+      <!-- Game Canvas -->
+      <div class="garden-wrapper">
+        <canvas id="garden-canvas" width="960" height="960"></canvas>
+      </div>
+
+      <!-- Bubble message -->
+      <div id="garden-info" class="info-bubble"></div>
+
+    </div>
+  </div>
+
+  <script src="garden.js"></script>
+</body>
+</html>

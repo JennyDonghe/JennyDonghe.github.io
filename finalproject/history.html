@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mood Calendar</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-background">
+    <div class="glass-card wide">
+      <header class="top-bar">
+        <h1 class="app-title small">Mood Calendar</h1>
+        <nav class="top-nav">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="mood.html" class="nav-link">New Entry</a>
+          <a href="garden.html" class="nav-link">Garden</a>
+
+        </nav>
+      </header>
+
+      <section class="history-header">
+        <p class="section-label">
+          Your emotions displayed on a monthly calendar. Each day shows your chosen emoji + its color.
+        </p>
+        <button id="clear-history-btn" class="secondary-button">
+          Clear All
+        </button>
+      </section>
+
+      <!-- ★ 日历容器 ★ -->
+      <section id="calendar-container" class="calendar-container"></section>
+
+      <!-- ★ 随机安慰语句 ★ -->
+      <p id="comfort-message" class="comfort-message"></p>
+
+      <p id="history-empty" class="status-message" style="display:none;">
+        No moods saved. Log your first mood in "New Entry" 💗
+      </p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

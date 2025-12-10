@@ -1,0 +1,452 @@
+/* 基础字体和全局背景 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+    sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #ffd6ff 0%, #ffafcc 40%, #bde0fe 100%);
+  color: #333;
+}
+
+/* 背景容器 */
+.app-background {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 毛玻璃卡片样式 */
+.glass-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 32px 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 18px 45px rgba(255, 182, 193, 0.5);
+}
+
+.glass-card.wide {
+  max-width: 800px;
+}
+
+/* 标题与文本 */
+.app-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #ee6ee8;
+  text-shadow: 0 4px 10px rgba(255, 105, 180, 0.7);
+  margin-bottom: 10px;
+}
+
+.app-title.small {
+  font-size: 24px;
+}
+
+.app-subtitle,
+.section-label {
+  font-size: 14px;
+  color: #fdf0f5;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* 顶部导航 */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.top-nav {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-link {
+  font-size: 13px;
+  text-decoration: none;
+  color: #e550bd;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(254, 100, 228, 0.8);
+  background: rgba(255, 255, 255, 0.15);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Emoji 区域 */
+.emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.emoji-btn {
+  font-size: 22px;
+  border-radius: 999px;
+  border: 0;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s, background 0.2s;
+  box-shadow: 0 4px 10px rgba(255, 192, 203, 0.4);
+}
+
+.emoji-btn:hover {
+  transform: translateY(-1px);
+}
+
+.emoji-btn.selected {
+  background: linear-gradient(135deg, #ffafcc, #ffc8dd);
+  box-shadow: 0 6px 16px rgba(255, 105, 180, 0.6);
+}
+
+/* 文本输入 */
+.mood-input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 12px 14px;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  font-size: 14px;
+  color: #444;
+  box-shadow: 0 8px 20px rgba(255, 182, 193, 0.35);
+}
+
+.mood-input::placeholder {
+  color: #b499a9;
+}
+
+/* 按钮 */
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.primary-button,
+.secondary-button {
+  border-radius: 999px;
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #ff7eb3, #ff758c);
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(255, 105, 180, 0.6);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 35px rgba(255, 105, 180, 0.8);
+}
+
+.secondary-button {
+  background: rgba(255, 255, 255, 0.9);
+  color: #ff5c9a;
+  border: 1px solid rgba(255, 192, 203, 0.9);
+}
+
+/* 状态提示 */
+.status-message {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #fff0fb;
+}
+
+/* History 页面 */
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.history-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+/* 单个 mood card */
+.mood-card {
+  border-radius: 18px;
+  padding: 14px 16px;
+  color: #333;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 16px rgba(255, 182, 193, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mood-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mood-card-emoji {
+  font-size: 22px;
+}
+
+.mood-card-date {
+  font-size: 12px;
+  color: #555;
+}
+
+.mood-card-text {
+  font-size: 14px;
+  color: #333;
+}
+
+/* 小屏幕适配 */
+@media (max-width: 600px) {
+  .glass-card,
+  .glass-card.wide {
+    padding: 24px 18px;
+  }
+
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* 日历布局 grid */
+.calendar-container {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 星期日～星期六 */
+  gap: 10px;
+}
+
+/* 日历单格 */
+.calendar-cell {
+  width: 100%;
+  min-height: 70px;
+  border-radius: 16px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* mood 日历格子有颜色 */
+.calendar-cell.mood {
+  color: #333;
+}
+
+/* 日期数字 */
+.calendar-date {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* emoji */
+.calendar-emoji {
+  font-size: 22px;
+  text-align: right;
+}
+
+/* 底部安慰语句 */
+.comfort-message {
+  margin-top: 24px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.55);
+  border-radius: 16px;
+  font-size: 14px;
+  color: #855689;
+  text-align: center;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(255,105,180,0.5);
+}
+
+.date-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.month-block {
+  margin-bottom: 40px;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.day-cell {
+  padding: 12px;
+  border-radius: 15px;
+  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.15);
+  text-align: center;
+}
+
+.day-cell .emoji {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.day-cell .date {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+
+.garden-flower:hover {
+  transform: scale(1.2) rotate(3deg);
+}
+
+
+/* Healing message */
+.garden-message {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #fff0fb;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+/*********** EMOTION GARDEN — Soil Version ***********/
+.garden-soil-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+
+
+/* 花朵显示 */
+.flower-emoji {
+  font-size: 36px;
+  cursor: pointer;
+  animation: gentle-float 3s ease-in-out infinite;
+  transition: transform 0.2s;
+}
+
+.flower-emoji:hover {
+  transform: scale(1.25) rotate(4deg);
+}
+
+/* 轻柔漂浮动画 */
+@keyframes gentle-float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
+/* Healing message */
+.garden-message {
+  margin-top: 18px;
+  font-size: 16px;
+  text-align: center;
+  color: #ffe7f7;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.garden-wrapper {
+  width: 100%;
+  overflow: auto;
+}
+
+#garden-canvas {
+  width: 100%;
+  max-width: 960px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  image-rendering: pixelated;
+}
+
+.garden-message {
+  margin-top: 18px;
+  text-align: center;
+  color: #ffe6fa;
+  font-size: 15px;
+  min-height: 22px;
+}
+
+.info-bubble {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  padding: 12px 18px;
+  max-width: 75%;
+  min-width: 180px;
+  background: rgba(255,240,250,0.85);
+  color: #b03080;
+  border: 2px solid rgba(255,140,200,0.8);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(255,105,180,0.35);
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity .4s, transform .25s;
+  pointer-events: none;
+}
+
+.info-bubble.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
