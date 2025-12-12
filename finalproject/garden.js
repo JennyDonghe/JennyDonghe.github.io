@@ -1,6 +1,4 @@
-/*********************************
- * CONFIG
- *********************************/
+
 const TILE_SIZE = 48;
 const MAP_COLS = 7;
 
@@ -27,9 +25,7 @@ const HEALING_MESSAGES = [
   "You are growing with every emotion. 🌷"
 ];
 
-/*********************************
- * CALENDAR META (match history.html)
- *********************************/
+
 function getMonthMeta() {
   const now = new Date();
   const y = now.getFullYear();
@@ -43,9 +39,7 @@ function getMonthMeta() {
 
 const { y: CUR_Y, m: CUR_M, firstDayOffset, rows: MAP_ROWS } = getMonthMeta();
 
-/*********************************
- * STORAGE (match your script.js)
- *********************************/
+
 function getSavedMoods() {
   try {
     return JSON.parse(localStorage.getItem("moods") || "[]");
@@ -54,12 +48,9 @@ function getSavedMoods() {
   }
 }
 
-/*********************************
- * Build flowers (use mm.date: YYYY-MM-DD)
- * Keep ONE entry per day (last one wins)
- *********************************/
+
 function buildFlowersFromMoods(moods) {
-  // only current month (same as history)
+  
   const monthMoods = moods.filter(mm => {
     if (!mm?.date) return false;
     const d = new Date(mm.date);
@@ -69,7 +60,7 @@ function buildFlowersFromMoods(moods) {
   const byDay = {};
   for (const mm of monthMoods) {
     const d = new Date(mm.date);
-    byDay[d.getDate()] = mm; // last wins
+    byDay[d.getDate()] = mm; 
   }
 
   const flowers = [];
@@ -77,7 +68,7 @@ function buildFlowersFromMoods(moods) {
     const day = Number(dayStr);
     const mm = byDay[day];
 
-    // calendar slot index (includes leading blanks)
+   
     const slot = firstDayOffset + (day - 1);
     const tileX = slot % MAP_COLS;
     const tileY = Math.floor(slot / MAP_COLS);
@@ -91,7 +82,7 @@ function buildFlowersFromMoods(moods) {
       date: mm.date,
       note: mm.text,
 
-      // interaction state
+      
       bumpTimer: 0,
       growScale: 1,
       growTimer: 0
@@ -100,9 +91,7 @@ function buildFlowersFromMoods(moods) {
   return flowers;
 }
 
-/*********************************
- * CANVAS SETUP
- *********************************/
+
 const CANVAS_W = TILE_SIZE * MAP_COLS;
 const CANVAS_H = TILE_SIZE * MAP_ROWS;
 
@@ -125,9 +114,7 @@ tileImg.onload = playerImg.onload = () => {
   if (loaded === 2) startGame();
 };
 
-/*********************************
- * PLAYER (your original animation logic)
- *********************************/
+
 const FRAME_SIZE = 32;
 const PLAYER_SPEED = 120;
 
@@ -144,9 +131,7 @@ let player = {
   frameTimer: 0
 };
 
-/*********************************
- * INPUT
- *********************************/
+
 const keys = {};
 window.addEventListener("keydown", e => {
   const k = e.key.toLowerCase();
@@ -157,9 +142,7 @@ window.addEventListener("keyup", e => {
   keys[e.key.toLowerCase()] = false;
 });
 
-/*********************************
- * PARTICLES (water + ripple)  ✅ restored
- *********************************/
+
 let particles = [];
 
 function spawnWaterParticles(x, y, tx, ty) {
@@ -189,9 +172,7 @@ function spawnRipple(x, y) {
   });
 }
 
-/*********************************
- * NEAREST FLOWER (works with tileX/tileY already offset-correct)
- *********************************/
+
 function getNearestFlower(flowers, px, py, maxDist = 52) {
   let best = null;
   let bestDist = maxDist;
@@ -208,14 +189,12 @@ function getNearestFlower(flowers, px, py, maxDist = 52) {
   return best;
 }
 
-/*********************************
- * BUBBLE (E interaction) ✅ restored formatting
- *********************************/
+
 function showBubble(flower) {
   const msg = HEALING_MESSAGES[Math.floor(Math.random() * HEALING_MESSAGES.length)];
   const note = flower.note ? `“${flower.note}”` : "";
 
-  // flower.date is YYYY-MM-DD already
+  
   infoEl.innerHTML = `
     <b>${flower.icon}</b> ${msg}<br>
     ${note ? `<span>${note}</span><br>` : ""}
@@ -227,9 +206,7 @@ function showBubble(flower) {
   showBubble.timer = setTimeout(() => infoEl.classList.remove("show"), 3000);
 }
 
-/*********************************
- * WATER FLOWER (SPACE) ✅ restored: grows + particles
- *********************************/
+
 function waterFlower(f) {
   f.growScale = Math.min(2.2, f.growScale + 0.18);
   f.growTimer = 0.35;
@@ -241,9 +218,7 @@ function waterFlower(f) {
   spawnRipple(fx, fy);
 }
 
-/*********************************
- * MAIN LOOP
- *********************************/
+
 function startGame() {
   const flowers = buildFlowersFromMoods(getSavedMoods());
 
@@ -260,9 +235,7 @@ function startGame() {
   requestAnimationFrame(loop);
 }
 
-/*********************************
- * UPDATE (movement + animation + interactions) ✅ restored
- *********************************/
+
 function update(dt, flowers) {
   let dx = 0, dy = 0;
   let moving = false;
@@ -285,7 +258,7 @@ function update(dt, flowers) {
   player.x = Math.max(half, Math.min(CANVAS_W - half, player.x));
   player.y = Math.max(half, Math.min(CANVAS_H - half, player.y));
 
-  // ✅ walk animation back
+  
   if (moving) {
     player.frameTimer += dt;
     if (player.frameTimer >= 0.12) {
@@ -296,7 +269,7 @@ function update(dt, flowers) {
     player.frame = 0;
   }
 
-  // ✅ particles update back
+  
   particles = particles.filter(p => p.life > 0);
   particles.forEach(p => {
     p.life -= dt;
@@ -309,7 +282,7 @@ function update(dt, flowers) {
     }
   });
 
-  // ✅ E interaction
+  
   if (keys["e"]) {
     keys["e"] = false;
     const f = getNearestFlower(flowers, player.x, player.y);
@@ -319,25 +292,23 @@ function update(dt, flowers) {
     }
   }
 
-  // ✅ SPACE watering
+  
   if (keys[" "]) {
     keys[" "] = false;
     const f = getNearestFlower(flowers, player.x, player.y, 58);
     if (f) waterFlower(f);
   }
 
-  // ✅ timers decay
+  
   flowers.forEach(f => {
     if (f.bumpTimer > 0) f.bumpTimer -= dt;
     if (f.growTimer > 0) f.growTimer -= dt;
   });
 }
 
-/*********************************
- * RENDER (soil + flowers + particles + player) ✅ restored + calendar blanks correct
- *********************************/
+
 function render(flowers) {
-  // soil tiles including leading blanks (we just make blanks dim)
+  
   let cellIndex = 0;
   for (let r = 0; r < MAP_ROWS; r++) {
     for (let c = 0; c < MAP_COLS; c++) {
@@ -348,7 +319,7 @@ function render(flowers) {
   }
   ctx.globalAlpha = 1;
 
-  // flowers (with grow + bump) ✅ restored
+  
   ctx.font = "24px system-ui";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -356,13 +327,12 @@ function render(flowers) {
   flowers.forEach(f => {
     let scale = f.growScale;
 
-    // grow bounce
+    
     if (f.growTimer > 0) {
       const t = f.growTimer / 0.35;
       scale *= 1 + 0.25 * Math.sin(t * Math.PI);
     }
 
-    // E bump
     if (f.bumpTimer > 0) {
       const t = f.bumpTimer / 0.3;
       scale *= 1 + 0.15 * Math.sin(t * Math.PI);
@@ -378,7 +348,7 @@ function render(flowers) {
     ctx.restore();
   });
 
-  // particles ✅ restored
+  
   particles.forEach(p => {
     ctx.save();
     if (p.type === "drop") {
@@ -399,9 +369,7 @@ function render(flowers) {
   drawPlayer();
 }
 
-/*********************************
- * DRAW PLAYER (✅ mirror left correctly, and keep sprite rows)
- *********************************/
+
 const PLAYER_SCALE = 2.2;
 
 function drawPlayer() {
@@ -418,7 +386,7 @@ function drawPlayer() {
 
   ctx.save();
   if (mirror) {
-    // ✅ Mirror the RIGHT-walk row (sy=FRAME_SIZE) just like your old code
+    
     ctx.translate(dx + w, dy);
     ctx.scale(-1, 1);
     ctx.drawImage(playerImg, sx, FRAME_SIZE, FRAME_SIZE, FRAME_SIZE, 0, 0, w, h);

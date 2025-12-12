@@ -1,6 +1,4 @@
-/************************
- * CONSTANTS
- ************************/
+
 const EMOJI_COLORS = {
   "😄": "#FFC8DD",
   "🙂": "#FFDFEA",
@@ -23,9 +21,7 @@ const COMFORT_MESSAGES = [
   "Your feelings are valid. They deserve space and understanding."
 ];
 
-/************************
- * STORAGE
- ************************/
+
 function getSavedMoods() {
   try {
     return JSON.parse(localStorage.getItem("moods") || "[]");
@@ -38,9 +34,7 @@ function setSavedMoods(moods) {
   localStorage.setItem("moods", JSON.stringify(moods));
 }
 
-/************************
- * SAVE MOOD
- ************************/
+
 function saveMoodEntry(emoji, text, dateString) {
   const moods = getSavedMoods();
   moods.push({
@@ -52,9 +46,7 @@ function saveMoodEntry(emoji, text, dateString) {
   setSavedMoods(moods);
 }
 
-/************************
- * MOOD PAGE
- ************************/
+
 function initMoodPage() {
   const emojiButtons = document.querySelectorAll(".emoji-btn");
   const saveButton = document.getElementById("save-mood-btn");
@@ -99,9 +91,7 @@ function initMoodPage() {
   });
 }
 
-/************************
- * HISTORY CALENDAR
- ************************/
+
 function renderCalendar() {
   const container = document.getElementById("calendar-container");
   const emptyMsg = document.getElementById("history-empty");
@@ -151,9 +141,7 @@ function renderCalendar() {
   }
 }
 
-/************************
- * CLEAR
- ************************/
+
 function initClearHistory() {
   const btn = document.getElementById("clear-history-btn");
   btn?.addEventListener("click", () => {
@@ -170,9 +158,7 @@ function displayRandomComfortMessage() {
   el.textContent = COMFORT_MESSAGES[Math.floor(Math.random() * COMFORT_MESSAGES.length)];
 }
 
-/************************
- * INIT
- ************************/
+
 document.addEventListener("DOMContentLoaded", () => {
   initMoodPage();
   renderCalendar();
