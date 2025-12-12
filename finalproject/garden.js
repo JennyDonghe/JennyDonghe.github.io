@@ -1,17 +1,12 @@
-/****************************************
+/*********************************
  * CONFIG
- ****************************************/
+ *********************************/
 const TILE_SIZE = 48;
-const MAP_COLS = 10;
-const MAP_ROWS = 10;
-const CANVAS_SIZE = TILE_SIZE * MAP_COLS;
+const MAP_COLS = 7;
 
 const PLAYER_SRC = "Player.png";
 const TILE_SRC = "FarmLand_Tile.png";
 
-/****************************************
- * EMOJI → 花朵 icon
- ****************************************/
 const EMOJI_TO_FLOWER_ICON = {
   "😄": "🌸",
   "🙂": "🌼",
@@ -23,9 +18,6 @@ const EMOJI_TO_FLOWER_ICON = {
   "🤩": "⭐"
 };
 
-/****************************************
- * Healing Messages
- ****************************************/
 const HEALING_MESSAGES = [
   "This emotion belongs in your garden. 🌱",
   "Thank you for feeling this honestly. 💗",
@@ -35,34 +27,71 @@ const HEALING_MESSAGES = [
   "You are growing with every emotion. 🌷"
 ];
 
-/****************************************
- * Load moods
- ****************************************/
+/*********************************
+ * CALENDAR META (match history.html)
+ *********************************/
+function getMonthMeta() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth(); // 0-11
+  const firstDayOffset = new Date(y, m, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const totalCells = firstDayOffset + daysInMonth;
+  const rows = Math.ceil(totalCells / MAP_COLS);
+  return { y, m, firstDayOffset, rows };
+}
+
+const { y: CUR_Y, m: CUR_M, firstDayOffset, rows: MAP_ROWS } = getMonthMeta();
+
+/*********************************
+ * STORAGE (match your script.js)
+ *********************************/
 function getSavedMoods() {
   try {
     return JSON.parse(localStorage.getItem("moods") || "[]");
-  } catch (e) {
+  } catch {
     return [];
   }
 }
 
-/****************************************
- * Convert moods → flowers placed on map
- ****************************************/
+/*********************************
+ * Build flowers (use mm.date: YYYY-MM-DD)
+ * Keep ONE entry per day (last one wins)
+ *********************************/
 function buildFlowersFromMoods(moods) {
-  const flowers = [];
-  const max = MAP_COLS * MAP_ROWS;
-  const count = Math.min(max, moods.length);
+  // only current month (same as history)
+  const monthMoods = moods.filter(mm => {
+    if (!mm?.date) return false;
+    const d = new Date(mm.date);
+    return !isNaN(d) && d.getFullYear() === CUR_Y && d.getMonth() === CUR_M;
+  });
 
-  for (let i = 0; i < count; i++) {
-    const m = moods[i];
+  const byDay = {};
+  for (const mm of monthMoods) {
+    const d = new Date(mm.date);
+    byDay[d.getDate()] = mm; // last wins
+  }
+
+  const flowers = [];
+  for (const dayStr of Object.keys(byDay)) {
+    const day = Number(dayStr);
+    const mm = byDay[day];
+
+    // calendar slot index (includes leading blanks)
+    const slot = firstDayOffset + (day - 1);
+    const tileX = slot % MAP_COLS;
+    const tileY = Math.floor(slot / MAP_COLS);
+
     flowers.push({
-      tileX: i % MAP_COLS,
-      tileY: Math.floor(i / MAP_COLS),
-      emoji: m.emoji,
-      icon: EMOJI_TO_FLOWER_ICON[m.emoji] || "🌼",
-      date: m.timestamp,
-      note: m.text,
+      day,
+      tileX,
+      tileY,
+      emoji: mm.emoji,
+      icon: EMOJI_TO_FLOWER_ICON[mm.emoji] || "🌼",
+      date: mm.date,
+      note: mm.text,
+
+      // interaction state
       bumpTimer: 0,
       growScale: 1,
       growTimer: 0
@@ -71,15 +100,18 @@ function buildFlowersFromMoods(moods) {
   return flowers;
 }
 
-/****************************************
- * Canvas + Assets
- ****************************************/
+/*********************************
+ * CANVAS SETUP
+ *********************************/
+const CANVAS_W = TILE_SIZE * MAP_COLS;
+const CANVAS_H = TILE_SIZE * MAP_ROWS;
+
 const canvas = document.getElementById("garden-canvas");
 const ctx = canvas.getContext("2d");
-const infoEl = document.getElementById("garden-info"); // bubble
+const infoEl = document.getElementById("garden-info");
 
-canvas.width = CANVAS_SIZE;
-canvas.height = CANVAS_SIZE;
+canvas.width = CANVAS_W;
+canvas.height = CANVAS_H;
 
 const tileImg = new Image();
 tileImg.src = TILE_SRC;
@@ -93,9 +125,9 @@ tileImg.onload = playerImg.onload = () => {
   if (loaded === 2) startGame();
 };
 
-/****************************************
- * Player
- ****************************************/
+/*********************************
+ * PLAYER (your original animation logic)
+ *********************************/
 const FRAME_SIZE = 32;
 const PLAYER_SPEED = 120;
 
@@ -105,28 +137,29 @@ const DIR_UP = 2;
 const DIR_LEFT = 3;
 
 let player = {
-  x: CANVAS_SIZE / 2,
-  y: CANVAS_SIZE / 2,
+  x: CANVAS_W / 2,
+  y: CANVAS_H / 2,
   dir: DIR_DOWN,
   frame: 0,
   frameTimer: 0
 };
 
-/****************************************
- * Input
- ****************************************/
+/*********************************
+ * INPUT
+ *********************************/
 const keys = {};
 window.addEventListener("keydown", e => {
-  keys[e.key.toLowerCase()] = true;
-  if ("wasd e ".includes(e.key.toLowerCase())) e.preventDefault();
+  const k = e.key.toLowerCase();
+  keys[k] = true;
+  if ("wasd e ".includes(k)) e.preventDefault();
 });
 window.addEventListener("keyup", e => {
   keys[e.key.toLowerCase()] = false;
 });
 
-/****************************************
- * Particles System
- ****************************************/
+/*********************************
+ * PARTICLES (water + ripple)  ✅ restored
+ *********************************/
 let particles = [];
 
 function spawnWaterParticles(x, y, tx, ty) {
@@ -156,9 +189,9 @@ function spawnRipple(x, y) {
   });
 }
 
-/****************************************
- * Find closest flower
- ****************************************/
+/*********************************
+ * NEAREST FLOWER (works with tileX/tileY already offset-correct)
+ *********************************/
 function getNearestFlower(flowers, px, py, maxDist = 52) {
   let best = null;
   let bestDist = maxDist;
@@ -167,7 +200,6 @@ function getNearestFlower(flowers, px, py, maxDist = 52) {
     const fx = f.tileX * TILE_SIZE + TILE_SIZE / 2;
     const fy = f.tileY * TILE_SIZE + TILE_SIZE / 2;
     const dist = Math.hypot(fx - px, fy - py);
-
     if (dist < bestDist) {
       bestDist = dist;
       best = f;
@@ -176,39 +208,28 @@ function getNearestFlower(flowers, px, py, maxDist = 52) {
   return best;
 }
 
-/****************************************
- * Bubble (E interaction)
- ****************************************/
+/*********************************
+ * BUBBLE (E interaction) ✅ restored formatting
+ *********************************/
 function showBubble(flower) {
   const msg = HEALING_MESSAGES[Math.floor(Math.random() * HEALING_MESSAGES.length)];
   const note = flower.note ? `“${flower.note}”` : "";
 
-  let dateStr = "";
-  if (flower.date) {
-    const d = new Date(flower.date);
-    if (!isNaN(d)) {
-      dateStr = `${d.getFullYear()}-${(d.getMonth()+1)
-        .toString().padStart(2,"0")}-${d.getDate().toString().padStart(2,"0")}`;
-    }
-  }
-
+  // flower.date is YYYY-MM-DD already
   infoEl.innerHTML = `
     <b>${flower.icon}</b> ${msg}<br>
     ${note ? `<span>${note}</span><br>` : ""}
-    <span style="opacity:.7">${dateStr}</span>
+    <span style="opacity:.7">${flower.date || ""}</span>
   `;
 
   infoEl.classList.add("show");
-
   clearTimeout(showBubble.timer);
-  showBubble.timer = setTimeout(() => {
-    infoEl.classList.remove("show");
-  }, 3000);
+  showBubble.timer = setTimeout(() => infoEl.classList.remove("show"), 3000);
 }
 
-/****************************************
- * WATER FLOWER (space)
- ****************************************/
+/*********************************
+ * WATER FLOWER (SPACE) ✅ restored: grows + particles
+ *********************************/
 function waterFlower(f) {
   f.growScale = Math.min(2.2, f.growScale + 0.18);
   f.growTimer = 0.35;
@@ -220,9 +241,9 @@ function waterFlower(f) {
   spawnRipple(fx, fy);
 }
 
-/****************************************
- * Main Loop
- ****************************************/
+/*********************************
+ * MAIN LOOP
+ *********************************/
 function startGame() {
   const flowers = buildFlowersFromMoods(getSavedMoods());
 
@@ -239,9 +260,9 @@ function startGame() {
   requestAnimationFrame(loop);
 }
 
-/****************************************
- * UPDATE
- ****************************************/
+/*********************************
+ * UPDATE (movement + animation + interactions) ✅ restored
+ *********************************/
 function update(dt, flowers) {
   let dx = 0, dy = 0;
   let moving = false;
@@ -261,10 +282,10 @@ function update(dt, flowers) {
   player.y += dy * PLAYER_SPEED * dt;
 
   const half = FRAME_SIZE / 2;
-  player.x = Math.max(half, Math.min(CANVAS_SIZE - half, player.x));
-  player.y = Math.max(half, Math.min(CANVAS_SIZE - half, player.y));
+  player.x = Math.max(half, Math.min(CANVAS_W - half, player.x));
+  player.y = Math.max(half, Math.min(CANVAS_H - half, player.y));
 
-  // walk animation
+  // ✅ walk animation back
   if (moving) {
     player.frameTimer += dt;
     if (player.frameTimer >= 0.12) {
@@ -275,11 +296,10 @@ function update(dt, flowers) {
     player.frame = 0;
   }
 
-  // particles update
+  // ✅ particles update back
   particles = particles.filter(p => p.life > 0);
   particles.forEach(p => {
     p.life -= dt;
-
     if (p.type === "drop") {
       p.vy += 260 * dt;
       p.x += p.vx * dt;
@@ -289,7 +309,7 @@ function update(dt, flowers) {
     }
   });
 
-  // interaction E
+  // ✅ E interaction
   if (keys["e"]) {
     keys["e"] = false;
     const f = getNearestFlower(flowers, player.x, player.y);
@@ -299,31 +319,36 @@ function update(dt, flowers) {
     }
   }
 
-  // watering SPACE
+  // ✅ SPACE watering
   if (keys[" "]) {
     keys[" "] = false;
     const f = getNearestFlower(flowers, player.x, player.y, 58);
     if (f) waterFlower(f);
   }
 
+  // ✅ timers decay
   flowers.forEach(f => {
     if (f.bumpTimer > 0) f.bumpTimer -= dt;
     if (f.growTimer > 0) f.growTimer -= dt;
   });
 }
 
-/****************************************
- * RENDER
- ****************************************/
+/*********************************
+ * RENDER (soil + flowers + particles + player) ✅ restored + calendar blanks correct
+ *********************************/
 function render(flowers) {
-  // ground tiles
+  // soil tiles including leading blanks (we just make blanks dim)
+  let cellIndex = 0;
   for (let r = 0; r < MAP_ROWS; r++) {
     for (let c = 0; c < MAP_COLS; c++) {
+      ctx.globalAlpha = cellIndex < firstDayOffset ? 0.35 : 1;
       ctx.drawImage(tileImg, c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      cellIndex++;
     }
   }
+  ctx.globalAlpha = 1;
 
-  // flowers
+  // flowers (with grow + bump) ✅ restored
   ctx.font = "24px system-ui";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -353,7 +378,7 @@ function render(flowers) {
     ctx.restore();
   });
 
-  // particles
+  // particles ✅ restored
   particles.forEach(p => {
     ctx.save();
     if (p.type === "drop") {
@@ -374,14 +399,15 @@ function render(flowers) {
   drawPlayer();
 }
 
-/****************************************
- * DRAW PLAYER
- ****************************************/
+/*********************************
+ * DRAW PLAYER (✅ mirror left correctly, and keep sprite rows)
+ *********************************/
 const PLAYER_SCALE = 2.2;
 
 function drawPlayer() {
   const sx = player.frame * FRAME_SIZE;
   let sy = player.dir * FRAME_SIZE;
+
   const mirror = player.dir === DIR_LEFT;
 
   const w = FRAME_SIZE * PLAYER_SCALE;
@@ -392,6 +418,7 @@ function drawPlayer() {
 
   ctx.save();
   if (mirror) {
+    // ✅ Mirror the RIGHT-walk row (sy=FRAME_SIZE) just like your old code
     ctx.translate(dx + w, dy);
     ctx.scale(-1, 1);
     ctx.drawImage(playerImg, sx, FRAME_SIZE, FRAME_SIZE, FRAME_SIZE, 0, 0, w, h);

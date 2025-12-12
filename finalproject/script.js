@@ -1,4 +1,6 @@
-
+/************************
+ * CONSTANTS
+ ************************/
 const EMOJI_COLORS = {
   "😄": "#FFC8DD",
   "🙂": "#FFDFEA",
@@ -9,7 +11,6 @@ const EMOJI_COLORS = {
   "😴": "#E2CFEA",
   "🤩": "#FFD6A5"
 };
-
 
 const COMFORT_MESSAGES = [
   "You are doing the best you can, and that's enough. 💗",
@@ -22,15 +23,13 @@ const COMFORT_MESSAGES = [
   "Your feelings are valid. They deserve space and understanding."
 ];
 
-/**************************************
- *  LocalStorage Helpers
- **************************************/
+/************************
+ * STORAGE
+ ************************/
 function getSavedMoods() {
   try {
-    const raw = localStorage.getItem("moods");
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    console.error("Error reading moods:", e);
+    return JSON.parse(localStorage.getItem("moods") || "[]");
+  } catch {
     return [];
   }
 }
@@ -39,21 +38,23 @@ function setSavedMoods(moods) {
   localStorage.setItem("moods", JSON.stringify(moods));
 }
 
-
+/************************
+ * SAVE MOOD
+ ************************/
 function saveMoodEntry(emoji, text, dateString) {
   const moods = getSavedMoods();
-
   moods.push({
     emoji,
     text,
     color: EMOJI_COLORS[emoji] || "#ffffff",
     date: dateString // YYYY-MM-DD
   });
-
   setSavedMoods(moods);
 }
 
-
+/************************
+ * MOOD PAGE
+ ************************/
 function initMoodPage() {
   const emojiButtons = document.querySelectorAll(".emoji-btn");
   const saveButton = document.getElementById("save-mood-btn");
@@ -65,97 +66,79 @@ function initMoodPage() {
 
   let selectedEmoji = null;
 
-  // Emoji select
-  emojiButtons.forEach((btn) => {
+  emojiButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-      emojiButtons.forEach((b) => b.classList.remove("selected"));
+      emojiButtons.forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
       selectedEmoji = btn.dataset.emoji;
     });
   });
 
-  // Save mood
-  if (saveButton) {
-    saveButton.addEventListener("click", () => {
+  saveButton?.addEventListener("click", () => {
+    if (!selectedEmoji) {
+      statusMessage.textContent = "please pick an emoji ～";
+      return;
+    }
+    if (!moodText.value.trim()) {
+      statusMessage.textContent = "please write a short note 💌";
+      return;
+    }
+    if (!dateInput.value) {
+      statusMessage.textContent = "please pick the date 📅";
+      return;
+    }
 
-      if (!selectedEmoji) {
-        statusMessage.textContent = "please pick an emoji ～";
-        return;
-      }
+    saveMoodEntry(selectedEmoji, moodText.value.trim(), dateInput.value);
 
-      const text = moodText.value.trim();
-      if (!text) {
-        statusMessage.textContent = "please write a short note 💌";
-        return;
-      }
+    moodText.value = "";
+    dateInput.value = "";
+    emojiButtons.forEach(b => b.classList.remove("selected"));
+    selectedEmoji = null;
 
-      const selectedDate = dateInput.value;
-      if (!selectedDate) {
-        statusMessage.textContent = "please pick the date 📅";
-        return;
-      }
-
-      saveMoodEntry(selectedEmoji, text, selectedDate);
-
-      // Reset UI
-      moodText.value = "";
-      dateInput.value = "";
-      emojiButtons.forEach((b) => b.classList.remove("selected"));
-      selectedEmoji = null;
-
-      statusMessage.textContent = "Saved! Check your history page 🌈";
-    });
-  }
+    statusMessage.textContent = "Saved! Check your history page 🌈";
+  });
 }
 
+/************************
+ * HISTORY CALENDAR
+ ************************/
 function renderCalendar() {
   const container = document.getElementById("calendar-container");
   const emptyMsg = document.getElementById("history-empty");
-
   if (!container) return;
 
   const moods = getSavedMoods();
-
   if (moods.length === 0) {
     emptyMsg.style.display = "block";
     return;
   }
-
   emptyMsg.style.display = "none";
 
-  // 当前月份
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth(); // 0 = Jan
+  const y = today.getFullYear();
+  const m = today.getMonth();
 
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
 
-  // 清空日历
   container.innerHTML = "";
 
-  // 前置空格子（本月第一天不是星期天）
   for (let i = 0; i < firstDay; i++) {
-    const emptyCell = document.createElement("div");
-    emptyCell.className = "calendar-cell";
-    container.appendChild(emptyCell);
+    const cell = document.createElement("div");
+    cell.className = "calendar-cell";
+    container.appendChild(cell);
   }
 
-  // 创建日期格子
   for (let day = 1; day <= daysInMonth; day++) {
     const cell = document.createElement("div");
     cell.className = "calendar-cell";
 
-    const formatted = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-      day
-    ).padStart(2, "0")}`;
-
-    const match = moods.find((m) => m.date === formatted);
+    const formatted = `${y}-${String(m + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const match = moods.find(m => m.date === formatted);
 
     if (match) {
       cell.classList.add("mood");
       cell.style.background = match.color;
-
       cell.innerHTML = `
         <span class="calendar-date">${day}</span>
         <span class="calendar-emoji">${match.emoji}</span>
@@ -168,22 +151,12 @@ function renderCalendar() {
   }
 }
 
-
-function displayRandomComfortMessage() {
-  const el = document.getElementById("comfort-message");
-  if (!el) return;
-
-  const msg =
-    COMFORT_MESSAGES[Math.floor(Math.random() * COMFORT_MESSAGES.length)];
-  el.textContent = msg;
-}
-
-
+/************************
+ * CLEAR
+ ************************/
 function initClearHistory() {
   const btn = document.getElementById("clear-history-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", () => {
+  btn?.addEventListener("click", () => {
     if (confirm("Clear all saved moods?")) {
       localStorage.removeItem("moods");
       location.reload();
@@ -191,10 +164,18 @@ function initClearHistory() {
   });
 }
 
+function displayRandomComfortMessage() {
+  const el = document.getElementById("comfort-message");
+  if (!el) return;
+  el.textContent = COMFORT_MESSAGES[Math.floor(Math.random() * COMFORT_MESSAGES.length)];
+}
 
+/************************
+ * INIT
+ ************************/
 document.addEventListener("DOMContentLoaded", () => {
-  initMoodPage();           // mood.html
-  renderCalendar();         // history.html
+  initMoodPage();
+  renderCalendar();
   displayRandomComfortMessage();
   initClearHistory();
 });
